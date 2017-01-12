@@ -54,6 +54,19 @@ object LinkedList {
     case Nil => l2
     case Cons(x, xs) => Cons(x, append(xs, l2))
   }
+
+  //Ex. 3.6
+  def init[A](l: LinkedList[A]): LinkedList[A] = l match {
+    case Nil => Nil
+    case Cons(x, xs) if xs == Nil => Nil
+    case Cons(x, xs) => Cons(x, init(xs))
+  }
+
+  def init2[A](l: LinkedList[A]): LinkedList[A] = l match {
+      case Nil => sys.error("init of empty list")
+      case Cons(_,Nil) => Nil
+      case Cons(h,t) => Cons(h,init(t))
+    }
   
   def apply[A](as: A*): LinkedList[A] =
     if(as.isEmpty) Nil
@@ -75,7 +88,8 @@ LinkedList.setHead(x, 8)
 LinkedList.drop(x, 3)
 LinkedList.dropWhile1(x, (x:Int) => x < 2)
 LinkedList.dropWhile2(x, (x:Int) => x < 3)
-
+LinkedList.init(x)
+LinkedList.init2(x)
 
 
 
