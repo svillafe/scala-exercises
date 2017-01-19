@@ -15,11 +15,17 @@ object LinkedList {
     case Cons(x, xs) => x * product(xs)
   }
 
+  def apply[A](as: A*): LinkedList[A] =
+    if(as.isEmpty) Nil
+    else Cons(as.head, apply(as.tail: _*))
+
+  //Ex 3.2
   def tail[A](list: LinkedList[A]): LinkedList[A] = list match {
     case Nil => Nil
     case Cons(x, xs) => xs
   }
 
+  //Ex 3.3
   def drop[A](list: LinkedList[A], n: Int): LinkedList[A] = {
     if(n < 1) list
     else list match {
@@ -66,13 +72,19 @@ object LinkedList {
       case Nil => sys.error("init of empty list")
       case Cons(_,Nil) => Nil
       case Cons(h,t) => Cons(h,init(t))
-    }
-  
-  def apply[A](as: A*): LinkedList[A] =
-    if(as.isEmpty) Nil
-    else Cons(as.head, apply(as.tail: _*))
+  }
+
+  //Ex 3.7
+  //No, it can't. This is because before the function 'f' is reduced,
+  //its arguments are evaluated. As a result, we traverse means the entire
+  //list.
+
+  //Ex 3.9
+  def length[A](as: LinkedList[A]): Int = foldRight(as, 0)((x, acc) => acc + 1)
+
 }
 
+//Ex 3.1
 val x = LinkedList[Int](1,2,3,4,5)
 
 x match {
@@ -83,13 +95,19 @@ x match {
   case _ => 101
 }
 
-LinkedList.tail(x)
-LinkedList.setHead(x, 8)
-LinkedList.drop(x, 3)
-LinkedList.dropWhile1(x, (x:Int) => x < 2)
-LinkedList.dropWhile2(x, (x:Int) => x < 3)
-LinkedList.init(x)
-LinkedList.init2(x)
+def foldRight[A,B](as: LinkedList[A], z: B)(f: (A,B) => B): B = as match {
+  case Nil => z
+  case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+}
 
+//Ex 3.8
+foldRight(LinkedList(1,2,3), Nil:LinkedList[Int])(Cons(_,_))
+//We get back the original list! Why is that? As we mentioned earlier, one way of thinking about what `foldRight` "does" is it replaces the `Nil` constructor of the list with the `z` argument, and it replaces the `Cons` constructor with the given function, `f`. If we just supply `Nil` for `z` and `Cons` for `f`, then we get back the input list.
+//  foldRight(Cons(1, Cons(2, Cons(3, Nil))), Nil:List[Int])(Cons(_,_))
+//Cons(1, foldRight(Cons(2, Cons(3, Nil)), Nil:List[Int])(Cons(_,_)))
+//Cons(1, Cons(2, foldRight(Cons(3, Nil), Nil:List[Int])(Cons(_,_))))
+//Cons(1, Cons(2, Cons(3, foldRight(Nil, Nil:List[Int])(Cons(_,_)))))
+//Cons(1, Cons(2, Cons(3, Nil)))
 
+LinkedList.length(x)
 
