@@ -82,6 +82,11 @@ object LinkedList {
   //Ex 3.9
   def length[A](as: LinkedList[A]): Int = foldRight(as, 0)((x, acc) => acc + 1)
 
+  //Ex 3.11
+  def sumFoldLeft(ints: LinkedList[Int]) : Int = foldLeft(ints, 0)(_+_)
+  def productFoldLeft(ints: LinkedList[Int]) : Int = foldLeft(ints, 1)(_*_)
+  
+
 }
 
 //Ex 3.1
@@ -98,6 +103,13 @@ x match {
 def foldRight[A,B](as: LinkedList[A], z: B)(f: (A,B) => B): B = as match {
   case Nil => z
   case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+}
+
+//Ex 3.10
+@annotation.tailrec
+def foldLeft[A, B](as: LinkedList[A], z:B) (f: (B,A) => B) : B = as match{
+  case Nil => z
+  case Cons(x, xs) => foldLeft(xs, f(z, x))(f)
 }
 
 //Ex 3.8
